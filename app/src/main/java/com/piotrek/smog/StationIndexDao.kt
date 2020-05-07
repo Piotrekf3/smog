@@ -16,5 +16,5 @@ interface StationIndexDao {
     suspend fun deleteAll()
 
     @Query("SELECT * FROM station_index")
-    fun all(): LiveData<List<Station>>
+    fun all(): LiveData<List<StationIndex>>
 }

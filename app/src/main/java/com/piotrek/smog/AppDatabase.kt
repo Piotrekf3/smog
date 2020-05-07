@@ -5,4 +5,7 @@ import androidx.room.RoomDatabase
 
 @Database(entities = arrayOf(Station::class, StationIndex::class), version = 1)
 abstract class AppDatabase : RoomDatabase() {
+
+    abstract fun stationDao(): StationDao
+    abstract fun stationIndexDao(): StationIndexDao
 }

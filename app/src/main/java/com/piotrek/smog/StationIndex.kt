@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(foreignKeys = arrayOf(ForeignKey(entity = Station::class, parentColumns = arrayOf("id"), childColumns = arrayOf("stationId"), onDelete = ForeignKey.CASCADE)),
+@Entity(foreignKeys = arrayOf(ForeignKey(entity = Station::class, parentColumns = arrayOf("id"), childColumns = arrayOf("station_id"), onDelete = ForeignKey.CASCADE)),
         tableName = "station_index")
 data class StationIndex (
     @PrimaryKey

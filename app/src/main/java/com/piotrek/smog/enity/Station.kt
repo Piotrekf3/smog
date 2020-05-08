@@ -1,4 +1,4 @@
-package com.piotrek.smog
+package com.piotrek.smog.enity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

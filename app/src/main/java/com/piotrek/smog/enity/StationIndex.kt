@@ -1,9 +1,10 @@
-package com.piotrek.smog
+package com.piotrek.smog.enity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.piotrek.smog.enity.Station
 
 @Entity(foreignKeys = arrayOf(ForeignKey(entity = Station::class, parentColumns = arrayOf("id"), childColumns = arrayOf("station_id"), onDelete = ForeignKey.CASCADE)),
         tableName = "station_index")

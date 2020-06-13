@@ -1,5 +1,6 @@
 package com.piotrek.smog.enity
 
+import android.location.Location
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -22,4 +23,11 @@ data class Station (
     var pm10: String?,
     var pm25: String?,
     var no2: String?
-)
+) {
+    fun getLocation(): Location {
+        val location = Location("")
+        location.longitude = gegrLon.toDouble()
+        location.latitude = gegrLat.toDouble()
+        return location
+    }
+}

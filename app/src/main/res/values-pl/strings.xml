@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Smog</string>
+    <string name="longitude">Długość</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="latitude">Szerokość</string>
+    <string name="index">Polski index jakości powietrza</string>
+    <string name="benzene">Benzen</string>
+    <string name="smogChannelName">Kanał ostrzeżeń</string>
+    <string name="smogChannelDescription">Kanał ostrzeżeń</string>
+</resources>

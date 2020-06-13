@@ -16,6 +16,9 @@ interface StationDao {
     @Query("DELETE FROM station")
     suspend fun deleteAll()
 
+    @Query("SELECT * FROM STATION WHERE ID = :id")
+    suspend fun get(id:Int): Station
+
     @Query("SELECT * FROM station")
     fun all(): LiveData<List<Station>>
 }

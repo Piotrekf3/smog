@@ -7,7 +7,7 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        applicationContext.deleteDatabase("stations.db");
+//        applicationContext.deleteDatabase("stations.db");
 
         appDatabase = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "stations.db")
             .build()

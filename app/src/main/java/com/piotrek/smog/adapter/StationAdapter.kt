@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.TextView
 import com.piotrek.smog.R
 import com.piotrek.smog.enity.Station
+import com.piotrek.smog.layout.MainActivity
 
 class StationAdapter(context: Context): ArrayAdapter<Station>(context, R.layout.station_row) {
 
@@ -22,6 +24,9 @@ class StationAdapter(context: Context): ArrayAdapter<Station>(context, R.layout.
         val stationIndex = view!!.findViewById<TextView>(R.id.stationIndex)
         stationName.text = station?.name
         stationIndex.text = station?.index
+        view.setOnClickListener() {
+            station?.id?.let { id -> (context as MainActivity).showDetails(id) }
+        }
         return view!!
     }
 }

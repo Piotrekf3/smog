@@ -14,6 +14,7 @@ import com.piotrek.smog.R
 import com.piotrek.smog.enity.Index
 import com.piotrek.smog.enity.Station
 import com.piotrek.smog.enity.StationResponse
+import com.piotrek.smog.layout.MainActivity
 import com.piotrek.smog.repository.LocationRepository
 import kotlinx.coroutines.*
 
@@ -21,13 +22,12 @@ private val stationDao by lazy { MyApplication.appDatabase.stationDao() }
 
 class ApiService : IntentService("ApiService"), CoroutineScope by MainScope() {
 
-    val SMOG_CHANNEL_ID = "com.example.student.android04c01.smog_chanel";
-    val SMOG_NOTIFICATION_ID = 10
     private var mManager: NotificationManager? = null
 
     override fun onHandleIntent(intent: Intent?) {
         when (intent?.action) {
             ACTION_FETCH_API -> {
+                makeMeForeground()
                 fetchApi()
             }
         }
@@ -36,6 +36,7 @@ class ApiService : IntentService("ApiService"), CoroutineScope by MainScope() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_FETCH_API -> {
+                makeMeForeground()
                 fetchApi()
             }
         }
@@ -43,7 +44,7 @@ class ApiService : IntentService("ApiService"), CoroutineScope by MainScope() {
     }
 
     private fun fetchApi() {
-        createSmogChannel()
+        createAlertChannel()
         launch(Dispatchers.IO) {
             try {
                 val response = ApiAdapter.apiClient.getStations()
@@ -69,22 +70,24 @@ class ApiService : IntentService("ApiService"), CoroutineScope by MainScope() {
                         //TODO delete debug
 //                        stationsSorted[0].index = Index.BAD
                         if(stationsSorted[0].index == Index.BAD || stationsSorted[0].index == Index.VERY_BAD) {
-                            createNotification()
+                            createAlertNotification()
                         }
                     }
                 }
+                stopForeground(true)
             } catch (e: Exception){
                 //TODO log error
+                stopForeground(true)
             }
         }
     }
 
-    fun createNotification() {
+    fun createAlertNotification() {
         val bm = BitmapFactory.decodeResource(
             resources,
             R.drawable.alert_foreground)
 
-        val notBuilder = NotificationCompat.Builder(this, SMOG_CHANNEL_ID)
+        val notBuilder = NotificationCompat.Builder(this, ALERT_CHANNEL_ID)
             .setSmallIcon(R.drawable.alert_foreground)
             .setLargeIcon(bm)
             .setContentTitle("Uwaga")
@@ -92,18 +95,57 @@ class ApiService : IntentService("ApiService"), CoroutineScope by MainScope() {
             .setAutoCancel(true)
 
         getNotificationManager()?.notify(
-            SMOG_NOTIFICATION_ID,
+            ALERT_NOTIFICATION_ID,
             notBuilder.build()
         )
     }
 
-    private fun createSmogChannel() {
+    private fun createAlertChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.smogChannelName)
             val description = getString(R.string.smogChannelDescription)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(
-                SMOG_CHANNEL_ID,
+                ALERT_CHANNEL_ID,
+                name, importance
+            )
+            channel.description = description
+            getNotificationManager()?.createNotificationChannel(channel)
+        }
+    }
+
+    fun makeMeForeground() {
+        createInfoChannel()
+        val mNotificationIntent = Intent(this,
+            MainActivity::class.java)
+
+        val mNotificationPendingIntent = PendingIntent.getActivity(
+            this, 0,
+            mNotificationIntent,
+            0)
+
+        val bm = BitmapFactory.decodeResource(
+            resources,
+            R.drawable.alert_foreground)
+
+        val notBuilder = NotificationCompat.Builder(this, INFO_CHANNEL_ID)
+            .setSmallIcon(R.drawable.alert_foreground)
+            .setLargeIcon(bm)
+            .setContentTitle("Smog")
+            .setContentText("Pobieranie danych")
+            .setAutoCancel(true)
+            .setContentIntent(mNotificationPendingIntent)
+
+        startForeground(INFO_NOTIFICATION_ID, notBuilder.build())
+    }
+
+    private fun createInfoChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.smogChannelName)
+            val description = getString(R.string.smogChannelDescription)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(
+                INFO_CHANNEL_ID,
                 name, importance
             )
             channel.description = description
@@ -120,6 +162,10 @@ class ApiService : IntentService("ApiService"), CoroutineScope by MainScope() {
 
     companion object {
         const val ACTION_FETCH_API = "com.piotrek.smog.api.action.FETCH_API"
+        const val ALERT_CHANNEL_ID = "com.example.student.android04c01.alert_chanel";
+        const val ALERT_NOTIFICATION_ID = 10
+        const val INFO_CHANNEL_ID = "com.example.student.android04c01.info_chanel";
+        const val INFO_NOTIFICATION_ID = 11
         @JvmStatic
         fun startActionFetchApi(context: Context) {
             val intent = Intent(context, ApiService::class.java).apply {

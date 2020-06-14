@@ -1,6 +1,7 @@
 package com.piotrek.smog.adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.piotrek.smog.R
 import com.piotrek.smog.enity.Station
+import com.piotrek.smog.layout.Colors
 import com.piotrek.smog.layout.MainActivity
 
 class StationAdapter(context: Context): ArrayAdapter<Station>(context, R.layout.station_row) {
@@ -27,6 +29,7 @@ class StationAdapter(context: Context): ArrayAdapter<Station>(context, R.layout.
         view.setOnClickListener() {
             station?.id?.let { id -> (context as MainActivity).showDetails(id) }
         }
+        view.setBackgroundColor(Colors.getColor(station?.index))
         return view!!
     }
 }
